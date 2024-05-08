@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Java Code Transformer</title>
+    <style>
+        #container { display: flex; }
+        #input, #output { flex: 1; padding: 10px; }
+        textarea { width: 90%; height: 200px; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="input">
+            <textarea id="javaCode" placeholder="Enter Java code here..."></textarea>
+            <button onclick="transformCode()">Transform Code</button>
+        </div>
+        <div id="output">
+            <textarea id="transformedCode" placeholder="Transformed Java code will appear here..." readonly></textarea>
+        </div>
+    </div>
+    <script>
+        function transformCode() {
+            const javaCode = document.getElementById('javaCode').value;
+            fetch('/transform', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({code: javaCode})
+            }).then(response => response.json())
+            .then(data => document.getElementById('transformedCode').value = data.transformed)
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
+
