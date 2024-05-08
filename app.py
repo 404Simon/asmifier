@@ -18,9 +18,7 @@ def transform_java_code(java_code):
     classname = re.search(r'class\s+(\w+)', java_code).group(1)
     with open(f'{classname}.java', 'w') as f:
         f.write(java_code)
-    output = subprocess.run(['./run.sh', classname], stderr=subprocess.PIPE)
-    if output.returncode != 0:
-        print(output.stderr.decode())
+    subprocess.run(['/bin/bash', 'run.sh', classname])
     with open(f'{classname}Dump.java', 'r') as f:
         java_code = f.read()
     return java_code

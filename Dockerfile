@@ -6,7 +6,7 @@ RUN apk update \
 && apk add --no-cache bash \
 && apk add --no-cache --virtual=build-dependencies unzip \
 && apk add --no-cache curl \
-&& apk add --no-cache openjdk8-jre
+&& apk add --no-cache openjdk8
 
 ### 3. Get Python, PIP
 
@@ -20,6 +20,7 @@ rm -r /root/.cache
 
 
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
+ENV PATH="$JAVA_HOME/bin:${PATH}"
 
 RUN pip install flask
 RUN pip install gunicorn
@@ -31,7 +32,7 @@ COPY app.py /app
 
 COPY asm-all-5.2.jar /app
 COPY run.sh /app
-RUN chmod +x /app/run.sh
+RUN chmod +x run.sh
 
 EXPOSE 5000
 
