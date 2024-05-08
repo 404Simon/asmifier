@@ -30,7 +30,7 @@ WORKDIR /app
 COPY templates /app/templates
 COPY app.py /app
 
-COPY asm-all-5.2.jar /app
+RUN curl -O https://repo1.maven.org/maven2/org/ow2/asm/asm-all/5.2/asm-all-5.2.jar
 COPY run.sh /app
 RUN chmod +x run.sh
 
