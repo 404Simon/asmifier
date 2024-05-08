@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Der Name der Java-Datei ohne Erweiterung als Argument übergeben
+input=$1
+
+# Kompilieren der Java-Datei mit javac8
+javac -source 8 -target 8 ${input}.java
+
+# Überprüfen, ob die Kompilierung erfolgreich war
+if [ $? -eq 0 ]; then
+    echo "Kompilierung erfolgreich."
+
+    # Verwenden von ASMifier, um den Bytecode der .class-Datei zu analysieren und in eine neue Java-Datei umzuwandeln
+    java -cp asm-all-5.2.jar org.objectweb.asm.util.ASMifier ${input}.class > ${input}Dump.java
+
+    if [ $? -eq 0 ]; then
+	echo "${input}Dump.java wurde erfolgreich erstellt."
+	echo -e "\n###### DUMP ######\n"
+	cat ${input}Dump.java
+	echo -e "\n###### DUMP ######\n"
+    else
+        echo "Fehler beim ASMifier-Prozess."
+    fi
+else
+    echo "Fehler bei der Kompilierung von ${input}.java"
+fi
+
