@@ -21,6 +21,16 @@ if [ $? -eq 0 ]; then
     else
         echo "Fehler beim ASMifier-Prozess."
     fi
+
+    java -jar jd-cli.jar ${input}.class > ${input}JD.java
+    if [ $? -eq 0 ]; then
+    echo "${input}JD.java wurde erfolgreich erstellt."
+    echo -e "\n###### JD ######\n"
+    cat ${input}JD.java
+    echo -e "\n###### JD ######\n"
+    else
+        echo "Fehler beim JD-Prozess."
+    fi
 else
     echo "Fehler bei der Kompilierung von ${input}.java"
 fi

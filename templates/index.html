@@ -4,9 +4,28 @@
     <meta charset="UTF-8">
     <title>Java Code Transformer</title>
     <style>
-        #container { display: flex; }
-        #input, #output { flex: 1; padding: 10px; }
-        textarea { width: 90%; height: 200px; }
+        body {
+            background-color: black;
+            color: white;
+        }
+        #container { display: flex; flex-direction: column; }
+        #input, #output, #decompiled {
+            flex: 1;
+            padding: 10px;
+        }
+        textarea {
+            width: 90%;
+            height: 400px;
+            background-color: black;
+            color: white;
+        }
+        button {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -17,6 +36,9 @@
         </div>
         <div id="output">
             <textarea id="transformedCode" placeholder="Transformed Java code will appear here..." readonly></textarea>
+        </div>
+        <div id="decompiled">
+            <textarea id="decompiledCode" placeholder="Decompiled Java code will appear here..." readonly></textarea>
         </div>
     </div>
     <script>
@@ -29,10 +51,12 @@
                 },
                 body: JSON.stringify({code: javaCode})
             }).then(response => response.json())
-            .then(data => document.getElementById('transformedCode').value = data.transformed)
+            .then(data => {
+                document.getElementById('transformedCode').value = data.transformed;
+                document.getElementById('decompiledCode').value = data.decompiled;
+            })
             .catch(error => console.error('Error:', error));
         }
     </script>
 </body>
 </html>
-

@@ -1,0 +1,5 @@
+/jd-cli/
+*.java
+*.class
+asm-*.jar
+jd-cli.jar

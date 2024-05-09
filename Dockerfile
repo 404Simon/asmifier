@@ -28,6 +28,7 @@ RUN pip install gunicorn
 WORKDIR /app
 
 COPY templates /app/templates
+COPY jd-cli.jar /app
 COPY app.py /app
 
 RUN curl -O https://repo1.maven.org/maven2/org/ow2/asm/asm-all/5.2/asm-all-5.2.jar
