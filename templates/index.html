@@ -13,7 +13,7 @@
             flex: 1;
             padding: 10px;
         }
-        textarea {
+        .editor {
             width: 90%;
             height: 400px;
             background-color: black;
@@ -27,33 +27,58 @@
             cursor: pointer;
         }
     </style>
+    <!-- Monaco Editor CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js"></script>
 </head>
 <body>
     <div id="container">
         <div id="input">
-            <textarea id="javaCode" placeholder="Enter Java code here..."></textarea>
+            <div id="javaCodeEditor" class="editor"></div>
             <button onclick="transformCode()">Transform Code</button>
         </div>
         <div id="output">
-            <textarea id="transformedCode" placeholder="Transformed Java code will appear here..." readonly></textarea>
+            <div id="transformedCodeEditor" class="editor"></div>
         </div>
         <div id="decompiled">
-            <textarea id="decompiledCode" placeholder="Decompiled Java code will appear here..." readonly></textarea>
+            <div id="decompiledCodeEditor" class="editor"></div>
         </div>
     </div>
     <script>
+        var javaCodeEditor, transformedCodeEditor, decompiledCodeEditor;
+
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            javaCodeEditor = monaco.editor.create(document.getElementById('javaCodeEditor'), {
+                value: '// Enter Java code here...',
+                language: 'java',
+                theme: 'vs-dark'
+            });
+            transformedCodeEditor = monaco.editor.create(document.getElementById('transformedCodeEditor'), {
+                value: '',
+                language: 'java',
+                theme: 'vs-dark',
+                readOnly: true
+            });
+            decompiledCodeEditor = monaco.editor.create(document.getElementById('decompiledCodeEditor'), {
+                value: '',
+                language: 'java',
+                theme: 'vs-dark',
+                readOnly: true
+            });
+        });
+
         function transformCode() {
-            const javaCode = document.getElementById('javaCode').value;
+            const javaCode = javaCodeEditor.getValue();
             fetch('/transform', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({code: javaCode})
+                body: JSON.stringify({ code: javaCode })
             }).then(response => response.json())
             .then(data => {
-                document.getElementById('transformedCode').value = data.transformed;
-                document.getElementById('decompiledCode').value = data.decompiled;
+                transformedCodeEditor.setValue(data.transformed);
+                decompiledCodeEditor.setValue(data.decompiled);
             })
             .catch(error => console.error('Error:', error));
         }
