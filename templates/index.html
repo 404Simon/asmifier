@@ -1,95 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Java Code Transformer</title>
     <style>
-        body {
-            background-color: black;
-            color: white;
-        }
-        #container { display: flex; flex-direction: column; }
-        #topRow {
-            display: flex;
-        }
-        #input, #decompiled {
-            flex: 1; /* Adjust this to change the relative width of the editors */
-            padding: 10px;
-        }
-        #output {
-            flex: 1;
-            padding: 10px;
-        }
-        .editor {
-            height: 400px;
-            background-color: #1e1e1e;
-            color: white;
-        }
-        button {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
+      body {
+        background-color: black;
+        color: white;
+      }
+      #container {
+        display: flex;
+        flex-direction: column;
+      }
+      #topRow {
+        display: flex;
+      }
+      #input,
+      #decompiled {
+        flex: 1; /* Adjust this to change the relative width of the editors */
+        padding: 10px;
+      }
+      #output {
+        flex: 1;
+        padding: 10px;
+      }
+      .editor {
+        height: 400px;
+        background-color: #1e1e1e;
+        color: white;
+      }
+      button {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
     </style>
     <!-- Monaco Editor CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="container">
-        <div id="topRow">
-            <div id="input">
-                <div id="javaCodeEditor" class="editor"></div>
-                <button onclick="transformCode()">Transform Code</button>
-            </div>
-            <div id="decompiled">
-                <div id="decompiledCodeEditor" class="editor"></div>
-            </div>
+      <div id="topRow">
+        <div id="input">
+          <div id="javaCodeEditor" class="editor"></div>
+          <button onclick="transformCode()">Transform Code</button>
         </div>
-        <div id="output">
-            <div id="transformedCodeEditor" class="editor" style="min-height: 600px;"></div>
+        <div id="decompiled">
+          <div id="decompiledCodeEditor" class="editor"></div>
         </div>
+      </div>
+      <div id="output">
+        <div
+          id="transformedCodeEditor"
+          class="editor"
+          style="min-height: 600px"
+        ></div>
+      </div>
     </div>
     <script>
-        var javaCodeEditor, transformedCodeEditor, decompiledCodeEditor;
+      var javaCodeEditor, transformedCodeEditor, decompiledCodeEditor;
 
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' }});
-        require(['vs/editor/editor.main'], function() {
-            javaCodeEditor = monaco.editor.create(document.getElementById('javaCodeEditor'), {
-                value: '// Enter Java code here...\n',
-                language: 'java',
-                theme: 'vs-dark'
-            });
-            transformedCodeEditor = monaco.editor.create(document.getElementById('transformedCodeEditor'), {
-                value: '',
-                language: 'java',
-                theme: 'vs-dark',
-                readOnly: true
-            });
-            decompiledCodeEditor = monaco.editor.create(document.getElementById('decompiledCodeEditor'), {
-                value: '',
-                language: 'java',
-                theme: 'vs-dark',
-                readOnly: true
-            });
-        });
+      require.config({
+        paths: {
+          vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs",
+        },
+      });
+      require(["vs/editor/editor.main"], function () {
+        javaCodeEditor = monaco.editor.create(
+          document.getElementById("javaCodeEditor"),
+          {
+            value: "// Enter Java code here...\n",
+            language: "java",
+            theme: "vs-dark",
+          }
+        );
+        transformedCodeEditor = monaco.editor.create(
+          document.getElementById("transformedCodeEditor"),
+          {
+            value: "",
+            language: "java",
+            theme: "vs-dark",
+            readOnly: true,
+          }
+        );
+        decompiledCodeEditor = monaco.editor.create(
+          document.getElementById("decompiledCodeEditor"),
+          {
+            value: "",
+            language: "java",
+            theme: "vs-dark",
+            readOnly: true,
+          }
+        );
+      });
 
-        function transformCode() {
-            const javaCode = javaCodeEditor.getValue();
-            fetch('/transform', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ code: javaCode })
-            }).then(response => response.json())
-            .then(data => {
-                transformedCodeEditor.setValue(data.transformed);
-                decompiledCodeEditor.setValue(data.decompiled);
-            })
-            .catch(error => console.error('Error:', error));
+      function transformCode() {
+        const javaCode = javaCodeEditor.getValue();
+        fetch("/transform", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code: javaCode }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            transformedCodeEditor.setValue(data.transformed);
+            decompiledCodeEditor.setValue(data.decompiled);
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      document.addEventListener("keydown", function (event) {
+        if (event.ctrlKey && (event.key === "s" || event.keyCode === 83)) {
+          event.preventDefault();
+          transformCode();
         }
+      });
     </script>
-</body>
+  </body>
 </html>
