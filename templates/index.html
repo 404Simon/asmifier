@@ -9,18 +9,24 @@
             color: white;
         }
         #container { display: flex; flex-direction: column; }
-        #input, #output, #decompiled {
+        #topRow {
+            display: flex;
+        }
+        #input, #decompiled {
+            flex: 1; /* Adjust this to change the relative width of the editors */
+            padding: 10px;
+        }
+        #output {
             flex: 1;
             padding: 10px;
         }
         .editor {
-            width: 90%;
             height: 400px;
-            background-color: black;
+            background-color: #1e1e1e;
             color: white;
         }
         button {
-            background-color: black;
+            background-color: #333;
             color: white;
             padding: 10px;
             margin-top: 10px;
@@ -32,15 +38,17 @@
 </head>
 <body>
     <div id="container">
-        <div id="input">
-            <div id="javaCodeEditor" class="editor"></div>
-            <button onclick="transformCode()">Transform Code</button>
+        <div id="topRow">
+            <div id="input">
+                <div id="javaCodeEditor" class="editor"></div>
+                <button onclick="transformCode()">Transform Code</button>
+            </div>
+            <div id="decompiled">
+                <div id="decompiledCodeEditor" class="editor"></div>
+            </div>
         </div>
         <div id="output">
-            <div id="transformedCodeEditor" class="editor"></div>
-        </div>
-        <div id="decompiled">
-            <div id="decompiledCodeEditor" class="editor"></div>
+            <div id="transformedCodeEditor" class="editor" style="min-height: 600px;"></div>
         </div>
     </div>
     <script>
@@ -49,7 +57,7 @@
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' }});
         require(['vs/editor/editor.main'], function() {
             javaCodeEditor = monaco.editor.create(document.getElementById('javaCodeEditor'), {
-                value: '// Enter Java code here...',
+                value: '// Enter Java code here...\n',
                 language: 'java',
                 theme: 'vs-dark'
             });
