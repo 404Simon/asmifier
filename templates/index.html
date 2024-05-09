@@ -46,6 +46,8 @@
         <div id="input">
           <div id="javaCodeEditor" class="editor"></div>
           <button onclick="transformCode()">Transform Code (CTRL + S)</button>
+          <input type="checkbox" id="debugInfo" name="debugInfo" />
+          <label for="debugInfo" style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Enable Debug Info</label>
         </div>
         <div id="decompiled">
           <div id="decompiledCodeEditor" class="editor"></div>
@@ -97,13 +99,21 @@
       });
 
       function transformCode() {
-        const javaCode = javaCodeEditor.getValue();
+        var javaCode = javaCodeEditor.getValue();
+        var javaCode = javaCode.replace(/\/\/.*$/gm, "");
+        if (javaCode.trim() === "") {
+          return;
+        }
+        var debugInfo = document.getElementById('debugInfo').checked;
         fetch("/transform", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ code: javaCode }),
+          body: JSON.stringify({
+            code: javaCode,
+            debugInfo: debugInfo
+          }),
         })
           .then((response) => response.json())
           .then((data) => {

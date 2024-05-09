@@ -3,8 +3,17 @@
 # Der Name der Java-Datei ohne Erweiterung als Argument übergeben
 input=$1
 
+# if $2 is not set or empty, set debug_info to empty string
+if [ -z "$2" ]; then
+    debug_info=""
+    echo "Debug-Informationen werden nicht hinzugefügt."
+else
+    debug_info="-g"
+    echo "Debug-Informationen werden hinzugefügt."
+fi
+
 # Kompilieren der Java-Datei mit javac8
-javac -source 8 -target 8 ${input}.java
+javac ${debug_info} -source 8 -target 8 ${input}.java
 
 # Überprüfen, ob die Kompilierung erfolgreich war
 if [ $? -eq 0 ]; then
